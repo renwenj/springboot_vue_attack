@@ -1,0 +1,9 @@
+CREATE TABLE `tech` (
+    `no` VARCHAR(50) NOT NULL COMMENT '技术编号', -- 技术编号作为主键
+    `ca0` DECIMAL(10, 4) COMMENT '无防御攻击成本', -- 无防御攻击成本
+    `ca1` DECIMAL(10, 4) COMMENT '有防御攻击成本', -- 有防御攻击成本
+    `pa0` DECIMAL(10, 4) COMMENT '无防御攻击概率', -- 无防御攻击概率
+    `pa1` DECIMAL(10, 4) COMMENT '有防御攻击概率', -- 有防御攻击概率
+    `r` DECIMAL(10, 4) COMMENT '攻击风险', -- 攻击风险
+    PRIMARY KEY (`no`) -- 将no设为主键
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

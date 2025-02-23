@@ -1,22 +1,30 @@
 package com.attack.entity;
+
+import lombok.Builder;
 import lombok.Data;
-
-import org.springframework.data.neo4j.core.schema.Id;
+import org.springframework.data.neo4j.core.schema.*;
 import org.springframework.data.neo4j.core.schema.Node;
-import org.springframework.data.neo4j.core.schema.GeneratedValue;
 
+import java.util.List;
 
 @Data
+@Builder
 @Node("Tactic")
 public class NodeTactic {
-
     @Id
     @GeneratedValue
-    private Long id;
+    Long id0;
 
+    @Property(name = "id")
+    private String id;
 
+    @Property(name = "name")
     private String name;
 
-    private String description;
+    @Property(name = "description")
+    private String des;
+
+    @Relationship(type = "技术", direction = Relationship.Direction.OUTGOING)
+    private List<TechnicRelation> technicRelation;
 }
 

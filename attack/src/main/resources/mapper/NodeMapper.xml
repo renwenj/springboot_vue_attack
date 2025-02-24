@@ -5,4 +5,7 @@
     <select id="pageCC" resultType="com.attack.entity.Node">
         select * from node ${ew.customSqlSegment}
     </select>
+    <select id="listAll" resultType="com.attack.entity.Node">
+        select * from node
+    </select>
 </mapper>

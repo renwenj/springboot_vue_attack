@@ -4,6 +4,7 @@ package com.attack.controller;
 import com.attack.common.QueryPageParam;
 import com.attack.common.Result;
 import com.attack.entity.Node;
+import com.attack.entity.User;
 import com.attack.service.NodeService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -21,6 +22,13 @@ public class NodeController {
 
     @Autowired
     private NodeService nodeService;
+
+    @GetMapping("/list")
+    public Result List(){
+        List list=nodeService.listAll();
+        return list.size()>0?Result.suc(list):Result.fail();
+    }
+
     @PostMapping("/save")
     public Result save(@RequestBody Node node){
         return nodeService.save(node)?Result.suc():Result.fail();
@@ -44,6 +52,12 @@ public class NodeController {
     @GetMapping("/findByNo")
     public Result findByNo(@RequestParam String name){
         List list=nodeService.lambdaQuery().eq(Node::getName,name).list();
+        return list.size()>0?Result.suc(list):Result.fail();
+    }
+
+    @GetMapping("/findById")
+    public Result findByNo(@RequestParam int id){
+        List list=nodeService.lambdaQuery().eq(Node::getId,id).list();
         return list.size()>0?Result.suc(list):Result.fail();
     }
 

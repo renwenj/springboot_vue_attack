@@ -18,5 +18,8 @@ public class NodeTacticController {
         return nodeTacticService.getNodeTacticById(id);
     }
 
-
+    @GetMapping("getalltactic")
+    public List<NodeTactic> getAllNodeTactic(){
+        return nodeTacticService.getAllNodeTactic();
+    }
 }

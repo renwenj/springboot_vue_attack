@@ -6,7 +6,7 @@
       <option v-for="tactic in neo4jTactic" :key="tactic.id" :value="tactic.id">
         {{ tactic.id }}({{ tactic.name }})
       </option>
-    </select><p>您选择的战术是: {{ selectedTactic }}</p>
+    </select>
     </div>
 
     <div class="select-group">
@@ -15,7 +15,7 @@
       <option v-for="technic in neo4jTechnic" :key="technic.id" :value="technic.id">
         {{ technic.id }}({{ technic.name }})
       </option>
-    </select><p>您选择的技术是: {{ selectedTechnic }}</p>
+    </select>
     </div>
 
     <div class="select-group">
@@ -24,7 +24,18 @@
         <option v-for="node in nodes" :key="node.id" :value="node.id">
           {{ node.name }}({{ node.imp }})
         </option>
-      </select><p>您选择的节点是: {{ selectedNodeName }}</p>
+      </select>
+    </div>
+
+    <div class="select-group">
+      <label for="vulnerability-level">漏洞等级:</label>
+      <input
+          id="vulnerability-level"
+          type="number"
+          v-model.number="vulnerabilityLevel"
+          min="1"
+          max="3"
+      />
     </div>
 
     <div v-if="technicDetails" class="table-container">
@@ -61,6 +72,10 @@
         </label>
       </div>
     </div>
+
+    <div class="select-group">
+      <button @click="calculate" class="styled-button" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">开始推演</button>
+    </div>
   </div>
 </template>
 
@@ -81,7 +96,7 @@ export default {
       selectedMitigations: [],
       nodes: [],
       selectedNode: '',
-      selectedNodeName:''
+      vulnerabilityLevel: ''
     };
   },
   mounted() {
@@ -89,6 +104,56 @@ export default {
     this.fetchNodes();
   },
   methods: {
+
+    async calculate() {
+      let risk = 0;
+      const technicResponse = await axios.get(this.$httpUrl + '/tech/findByNo?no=' + this.selectedTechnic);
+      const technicCa0 = technicResponse.data.data[0].ca0;
+      const technicCa1 = technicResponse.data.data[0].ca1;
+      const technicPa0 = technicResponse.data.data[0].pa0;
+      const technicPa1 = technicResponse.data.data[0].pa1;
+      const technicR = technicResponse.data.data[0].r;
+      console.log(technicCa0);
+      console.log(technicCa1);
+      console.log(technicPa0);
+      console.log(technicPa1);
+      console.log(technicR);
+      if (!Array.isArray(this.selectedMitigations)) {
+        console.error('selectedMitigations不是数组');
+      }
+      const promises = this.selectedMitigations.map(async (mitigationId) => {
+        try {
+          const response = await axios.get(this.$httpUrl+'/miti/findByNo?no='+mitigationId);
+          if (response.data && response.data.code === 200 && Array.isArray(response.data.data)) {
+            return response.data.data;
+          } else {
+            console.warn(`No data found or unexpected response format for ID ${mitigationId}`);
+            return [];
+          }
+        } catch (error) {
+          console.error(`Error fetching data for mitigation ID ${mitigationId}:`, error);
+          return [];
+        }
+      });
+      const results = await Promise.all(promises);
+      console.log(results);
+      const allData = results.flat();
+
+      let totalE = 0, totalCd = 0, count = 0;
+
+      allData.forEach(item => {
+        if (item.e !== undefined && item.cd !== undefined) {
+          totalE += parseFloat(item.e);
+          totalCd += parseFloat(item.cd);
+          count++;
+        }
+      });
+      const avgE = count > 0 ? totalE / count : 0;
+      const avgCd = count > 0 ? totalCd / count : 0;
+      console.log(avgE);
+      console.log(avgCd);
+      return risk;
+    },
     async fetchNeo4jTactic() {
       try {
         const response = await axios.get(this.$httpUrl+'/nodetactic/getalltactic');
@@ -109,25 +174,16 @@ export default {
         this.errorMessage = '获取技术数据失败，请稍后重试';
       }
     },
-    async fetchNodeDetails() {
+    /*async fetchNodeDetails() {
       if (!this.selectedNode) return; // 如果没有选择节点，直接返回
       try {
         const response = await axios.get(this.$httpUrl + '/node/findById?id=' + this.selectedNode);
-        const nodeDetails = response.data.data; // 从 data 字段中提取节点详细信息
-        console.log('节点详细信息:', nodeDetails);
-
-        // 更新选中的节点名称
-        const selectedNodeObj = this.neo4jNodes.find(node => node.id === this.selectedNode);
-        if (selectedNodeObj) {
-          this.selectedNodeName = selectedNodeObj.name;
-        } else {
-          this.selectedNodeName = '未知节点';
-        }
+        console.log(response.data);
       } catch (error) {
         console.error('获取节点详细信息失败:', error);
         this.errorMessage = '获取节点详细信息失败，请稍后重试';
       }
-    },
+    },*/
     async fetchNodes() {
       //if (!this.selectedNode) return; // 如果没有选择节点，直接返回
       try {
@@ -168,6 +224,13 @@ div {
 .select-group {
   display: inline-block;
   margin-right: 20px; /* 调整间距 */
+}
+
+input[type="number"] {
+  margin-left: 10px;
+  padding: 5px;
+  font-size: 14px;
+  width: 50px; /* 根据需要调整宽度 */
 }
 
 label {

@@ -75,6 +75,7 @@
 
     <div class="select-group">
       <button @click="calculate" class="styled-button" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">开始推演</button>
+      <span v-if="calculationResult" class="result-text">推演结果为: {{ calculationResult }}</span>
     </div>
   </div>
 </template>
@@ -96,7 +97,8 @@ export default {
       selectedMitigations: [],
       nodes: [],
       selectedNode: '',
-      vulnerabilityLevel: ''
+      vulnerabilityLevel: '',
+      calculationResult: ''
     };
   },
   mounted() {
@@ -106,7 +108,6 @@ export default {
   methods: {
 
     async calculate() {
-      let risk = 0;
       const technicResponse = await axios.get(this.$httpUrl + '/tech/findByNo?no=' + this.selectedTechnic);
       const technicCa0 = technicResponse.data.data[0].ca0;
       const technicCa1 = technicResponse.data.data[0].ca1;
@@ -123,9 +124,9 @@ export default {
       }
       const promises = this.selectedMitigations.map(async (mitigationId) => {
         try {
-          const response = await axios.get(this.$httpUrl+'/miti/findByNo?no='+mitigationId);
-          if (response.data && response.data.code === 200 && Array.isArray(response.data.data)) {
-            return response.data.data;
+          const mitiResponse = await axios.get(this.$httpUrl+'/miti/findByNo?no='+mitigationId);
+          if (mitiResponse.data && mitiResponse.data.code === 200 && Array.isArray(mitiResponse.data.data)) {
+            return mitiResponse.data.data;
           } else {
             console.warn(`No data found or unexpected response format for ID ${mitigationId}`);
             return [];
@@ -135,24 +136,50 @@ export default {
           return [];
         }
       });
-      const results = await Promise.all(promises);
-      console.log(results);
-      const allData = results.flat();
+      const mitiResults = await Promise.all(promises);
+      const mitiAllData = mitiResults.flat();
 
-      let totalE = 0, totalCd = 0, count = 0;
+      let totalE = 0, totalCd = 0, mitiCount = 0;
 
-      allData.forEach(item => {
+      mitiAllData.forEach(item => {
         if (item.e !== undefined && item.cd !== undefined) {
           totalE += parseFloat(item.e);
           totalCd += parseFloat(item.cd);
-          count++;
+          mitiCount++;
         }
       });
-      const avgE = count > 0 ? totalE / count : 0;
-      const avgCd = count > 0 ? totalCd / count : 0;
+      const avgE = mitiCount > 0 ? totalE / mitiCount : 0;
+      const avgCd = mitiCount > 0 ? totalCd / mitiCount : 0;
       console.log(avgE);
       console.log(avgCd);
-      return risk;
+
+      const nodeResponse = await axios.get(this.$httpUrl + '/node/findById?id=' + this.selectedNode);
+      const nodeImp = nodeResponse.data.data[0].imp;
+      console.log(nodeImp);
+
+      const vulLevel = this.vulnerabilityLevel;
+      console.log(vulLevel);
+
+      const gameL=vulLevel*nodeImp;
+      const gameR=1.2*gameL;
+
+      const A=avgE-avgCd;
+      const B=technicPa0*gameR-technicCa0-2*technicR;
+      const C=technicPa0*gameL+avgE-avgCd;
+      const D=technicPa1*gameR-technicCa1-2*technicR;
+      if( A<0 && B<0 && C<0 && D<0){
+        this.calculationResult='防御者不追加ATT&CK防御,攻击者不采取ATT&CK攻击';
+      }else if(A<0 && B>0 && C<0 && D<0){
+        this.calculationResult='防御者不追加ATT&CK防御,攻击者采取ATT&CK攻击';
+      }else if(A<0 && B>0 && C<0 && D>0){
+        this.calculationResult='防御者不追加ATT&CK防御,攻击者采取ATT&CK攻击';
+      }else if(A>0 && B<0 && C>0 && D<0){
+        this.calculationResult='防御者追加ATT&CK防御,攻击者不采取ATT&CK攻击';
+      }else if(A>0 && B>0 && C>0 && D<0){
+        this.calculationResult='防御者追加ATT&CK防御,攻击者不采取ATT&CK攻击';
+      }else{
+        this.calculationResult='防御者追加ATT&CK防御,攻击者采取ATT&CK攻击';
+      }
     },
     async fetchNeo4jTactic() {
       try {
@@ -222,7 +249,8 @@ div {
   margin-bottom: 20px;
 }*/
 .select-group {
-  display: inline-block;
+  /*display: inline-block;*/
+  display: block;
   margin-right: 20px; /* 调整间距 */
 }
 
@@ -338,5 +366,12 @@ p {
   margin-top: 5px;
   font-size: 14px;
   color: #666;
+}
+
+.result-text {
+  margin-left: 10px;
+  font-size: 16px;
+  color: #4CAF50; /* 绿色字体 */
+  font-weight: bold;
 }
 </style>

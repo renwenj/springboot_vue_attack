@@ -1,0 +1,13 @@
+@startuml
+actor User
+participant "MyTechManage" as MyTechManage
+participant "Axios" as Axios
+participant "Backend" as Backend
+
+User -> MyTechManage : Load Page
+MyTechManage -> Axios : GET /tech/listPage
+Axios -> Backend : Request Data
+Backend --> Axios : Return Data
+Axios --> MyTechManage : Update tableData
+MyTechManage --> User : Display Data
+@enduml

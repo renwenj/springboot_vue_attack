@@ -1,0 +1,10 @@
+@startuml
+class UserServiceImpl {
+- UserMapper userMapper
++ List<User> listAll()
++ IPage pageC(IPage<User>)
++ IPage pageCC(IPage<User>,Wrapper)
+}
+UserService <|.. UserServiceImpl
+ServiceImpl <|-- UserServiceImpl
+@enduml

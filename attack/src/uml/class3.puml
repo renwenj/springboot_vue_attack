@@ -1,0 +1,65 @@
+@startuml
+class MenuController {
+- MenuService menuService
++ Result list(String)
+}
+
+class UserController {
+- UserService userService
+- MenuService menuService
++ List<User> List()
++ Result save(User)
++ Result update(User)
++ boolean mod(User)
++ boolean saveOrMod(User)
++ Result del(String)
++ Result listP(User)
++ List<User> listPage(QueryPageParam)
++ List<User> listPage1(QueryPageParam)
++ Result listPage2(QueryPageParam)
++ Result findByNo(String)
++ Result login(User)
+}
+
+interface MenuMapper {
+}
+BaseMapper <|-- MenuMapper
+
+interface UserMapper {
+~ List<User> listAll()
+~ IPage page1(IPage<User>)
+~ IPage page2(IPage<User>,Wrapper)
+}
+BaseMapper <|-- UserMapper
+
+interface MenuService {
+}
+IService <|-- MenuService
+
+interface UserService {
+~ List<User> listAll()
+~ IPage page1(IPage<User>)
+~ IPage page2(IPage<User>,Wrapper)
+}
+IService <|-- UserService
+
+class MenuServiceImpl {
+}
+MenuService <|.. MenuServiceImpl
+ServiceImpl <|-- MenuServiceImpl
+
+class UserServiceImpl {
+- UserMapper userMapper
++ List<User> listAll()
++ IPage page1(IPage<User>)
++ IPage page2(IPage<User>,Wrapper)
+}
+UserService <|.. UserServiceImpl
+ServiceImpl <|-- UserServiceImpl
+
+MenuController -- UserController
+MenuController -- MenuService
+UserController -- UserService
+MenuService -- MenuMapper
+UserService -- UserMapper
+@enduml

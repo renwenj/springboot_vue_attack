@@ -1,0 +1,63 @@
+@startuml
+!define RECTANGLE class
+
+skinparam linetype ortho
+skinparam componentStyle rectangle
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+
+package "Frontend" {
+    component "MyUserManage.vue" as MyUserManage {
+        RECTANGLE "Data Properties" as DataProperties {
+            - tableData: Array
+            - pageSize: Number
+            - pageNum: Number
+            - total: Number
+            - name: String
+            - sex: String
+            - dialogVisible: Boolean
+            - form: Object {
+                id: String
+                no: String
+                name: String
+                password: String
+                age: String
+                phone: String
+                sex: String
+                roleId: String
+            }
+
+        RECTANGLE "Methods" as Methods {
+            + checkAge(rule, value, callback)
+            + checkDuplicate(rule, value, callback)
+            + mod(row)
+            + del(id)
+            + resetForm()
+            + add()
+            + loadGet()
+            + doSave()
+            + doMod()
+            + save()
+            + loadPost()
+            + resetParam()
+            + handleSizeChange(val)
+            + handleCurrentChange(val)
+            + beforeMount()
+        }
+    }
+
+package "Backend" {
+    component "axios" as Axios {
+        RECTANGLE "API Endpoints" as API {
+        }
+    }
+}
+
+' Relationships
+MyUserManage --> Axios : Uses
+MyUserManage ..> DataProperties : Contains
+MyUserManage ..> Methods : Contains
+Axios ..> API : Contains
+
+
+@enduml

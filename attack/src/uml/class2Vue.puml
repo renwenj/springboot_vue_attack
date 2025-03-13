@@ -1,0 +1,54 @@
+@startuml
+!define RECTANGLE class
+
+skinparam linetype ortho
+skinparam componentStyle rectangle
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+
+
+
+package "Frontend" {
+    component "MyGameOne.vue" as MyGameOne {
+        RECTANGLE "Data Properties" as DataProperties {
+            - neo4jTactic: Array
+            - neo4jTechnic: Array
+            - selectedTactic: String
+            - selectedTechnic: String
+            - technicDetails: Array
+            - mitigationMeasures: Array
+            - selectedMitigations: Array
+            - nodes: Array
+            - selectedNode: String
+            - vulnerabilityLevel: Number
+            - calculationResult: String
+        }
+
+        RECTANGLE "Methods" as Methods {
+            + fetchNeo4jTactic()
+            + fetchTechnics()
+            + fetchTechnicDetails()
+            + fetchNodes()
+            + fetchNodeDetails()
+            + calculate()
+        }
+    }
+}
+
+package "Backend" {
+    component "axios" as Axios {
+        RECTANGLE "API Endpoints" as API {
+
+        }
+    }
+}
+
+' Relationships
+MyGameOne -> Axios : Uses
+MyGameOne ..> DataProperties : Contains
+MyGameOne ..> Methods : Contains
+Axios ..> API : Contains
+
+
+
+@enduml

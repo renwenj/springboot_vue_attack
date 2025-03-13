@@ -1,0 +1,85 @@
+@startuml
+class NodeTacticController {
+- NodeTacticService nodeTacticService
++ NodeTactic getNodeTactic(String)
++ List<NodeTactic> getAllNodeTactic()
+}
+class NodeTechnicController {
+- NodeTechnicService nodeTechnicService
++ NodeTechnic getNodeTechnic(String)
+}
+class NodeMitigation {
+~ Long id0
+- String id
+- String name
+- String des
+}
+class NodeTactic {
+~ Long id0
+- String id
+- String name
+- String des
+- List<TechnicRelation> technicRelation
+}
+
+class NodeTechnic {
+~ Long id0
+- String id
+- String name
+- String des
+- List<MitigationRelation> mitigationRelation
+}
+class NodeMitigationService {
+- NodeMitigationRepository nodeMitigationRepository
++ List<NodeMitigation> getAllNodeMitigation()
++ NodeMitigation getNodeMitigationById(String)
++ NodeMitigation addNodeMitigation(String)
++ void deleteNodeMitigation(String)
+}
+
+class NodeTacticService {
+- NodeTacticRepository nodeTacticRepository
++ List<NodeTactic> getAllNodeTactic()
++ NodeTactic getNodeTacticById(String)
++ NodeTactic addNodeTactic(String)
++ void deleteNodeTactic(String)
+}
+class NodeTechnicService {
+- NodeTechnicRepository nodeTechnicRepository
++ List<NodeTechnic> getAllNodeTechnic()
++ NodeTechnic getNodeTechnicById(String)
++ NodeTechnic addNodeTechnic(String)
++ void deleteNodeTechnic(String)
+}
+interface NodeMitigationRepository {
+~ NodeMitigation findNodeMitigationById(String)
+}
+
+interface NodeTacticRepository {
+~ NodeTactic findNodeTacticById(String)
+~ List<NodeTactic> findAll()
+}
+
+interface NodeTechnicRepository {
+~ NodeTechnic findNodeTechnicById(String)
+}
+interface Neo4jRepository{
+}
+
+package 攻防策略库及节点库模块 {
+}
+Neo4jRepository <|.. NodeTechnicRepository
+Neo4jRepository <|.. NodeTacticRepository
+Neo4jRepository <|.. NodeMitigationRepository
+NodeTechnicRepository --- NodeTechnicService
+NodeTacticRepository --- NodeTacticService
+NodeMitigationRepository -- NodeMitigationService
+NodeTacticController -- NodeTacticService
+NodeTacticController -- NodeTactic
+NodeTacticController --- NodeTechnic
+NodeTechnicController -- NodeTechnicService
+NodeTechnicController --- NodeTechnic
+NodeTechnicController --- NodeMitigation
+攻防策略库及节点库模块 --- NodeTacticController
+攻防策略库及节点库模块 --- NodeTechnicController
+@enduml

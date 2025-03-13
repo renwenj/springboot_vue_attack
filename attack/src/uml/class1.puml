@@ -1,0 +1,86 @@
+@startuml
+class TechController {
+    -TechService techService
+    +save()
+    +update()
+    +del()
+    +saveOrUpdate()
+    +findByNo()
+    +listPage()
+}
+
+interface TechService {
+    +pageList()
+}
+
+interface TechMapper {
+    +pageList()
+}
+
+class TechServiceImpl {
+    -TechMapper techMapper
+    +pageList()
+}
+
+Interface IPage{
++setRecords()
++getRecords()
++setTotal(long total)
++getTotal()
++setCurrent(long current)
++getCurrent()
++setSize(long size)
++getSize()
+...
+}
+
+class Page{
++setRecords()
++getRecords()
++setTotal(long total)
++getTotal()
++setCurrent(long current)
++getCurrent()
++setSize(long size)
++getSize()
+...
+}
+
+interface IService{
++save()
++updateById();
++removeById();
+...
+}
+
+interface BaseMapper{
++insert()
++deleteById()
++updateById()
+...
+}
+
+class LambdaQueryWrapper{
++eq()
++ne()
++gt()
++ge()
+...
+}
+
+class ServiceImpl{
++save()
++updateById();
++removeById();
+...
+}
+BaseMapper <|.. TechMapper
+IService <|.. TechService
+TechService <|.. TechServiceImpl
+ServiceImpl <|-- TechServiceImpl
+TechController --- IPage
+TechController -- Page
+TechController - LambdaQueryWrapper
+TechController -- TechService
+TechService -- TechMapper
+@enduml

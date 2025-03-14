@@ -124,7 +124,7 @@ export default {
       }
       const promises = this.selectedMitigations.map(async (mitigationId) => {
         try {
-          const mitiResponse = await axios.get(this.$httpUrl+'/miti/findByNo?no='+mitigationId);
+          const mitiResponse = await axios.get(this.$httpUrl + '/miti/findByNo?no=' + mitigationId);
           if (mitiResponse.data && mitiResponse.data.code === 200 && Array.isArray(mitiResponse.data.data)) {
             return mitiResponse.data.data;
           } else {
@@ -160,25 +160,56 @@ export default {
       const vulLevel = this.vulnerabilityLevel;
       console.log(vulLevel);
 
-      const gameL=vulLevel*nodeImp;
-      const gameR=1.2*gameL;
+      const gameL = vulLevel * nodeImp;
+      const gameR = 1.2 * gameL;
 
-      const A=avgE-avgCd;
-      const B=technicPa0*gameR-technicCa0-2*technicR;
-      const C=technicPa0*gameL+avgE-avgCd;
-      const D=technicPa1*gameR-technicCa1-2*technicR;
-      if( A<0 && B<0 && C<0 && D<0){
-        this.calculationResult='防御者不追加ATT&CK防御,攻击者不采取ATT&CK攻击';
+      const A = avgE - avgCd;
+      const B = technicPa0 * gameR - technicCa0 - 2 * technicR;
+      const C = technicPa0 * gameL - technicPa1 * gameL + avgE - avgCd;
+      const D = technicPa1 * gameR - technicCa1 - 2 * technicR;
+      console.log(A)
+      console.log(B)
+      console.log(C)
+      console.log(D)
+      if (A < 0 && B < 0 && C < 0 && D < 0) {
+        this.calculationResult = '防御者不追加ATT&CK防御,攻击者不采取ATT&CK攻击';
+        console.log(1)
+      }else if(A < 0 && B < 0 && C < 0 && D > 0){
+        this.calculationResult = '防御者不追加ATT&CK防御,攻击者不采取ATT&CK攻击';
+        console.log(2)
+      }else if(A < 0 && B < 0 && C > 0 && D < 0){
+        this.calculationResult = '防御者不追加ATT&CK防御,攻击者不采取ATT&CK攻击';
+        console.log(3)
       }else if(A<0 && B>0 && C<0 && D<0){
         this.calculationResult='防御者不追加ATT&CK防御,攻击者采取ATT&CK攻击';
+        console.log(4)
       }else if(A<0 && B>0 && C<0 && D>0){
         this.calculationResult='防御者不追加ATT&CK防御,攻击者采取ATT&CK攻击';
+        console.log(5)
+      }else if(A>0 && B>0 && C<0 && D>0){
+        this.calculationResult='防御者不追加ATT&CK防御,攻击者采取ATT&CK攻击';
+        console.log(6)
+      }else if(A>0 && B<0 && C<0 && D<0){
+        this.calculationResult='防御者追加ATT&CK防御,攻击者不采取ATT&CK攻击';
+        console.log(7)
       }else if(A>0 && B<0 && C>0 && D<0){
         this.calculationResult='防御者追加ATT&CK防御,攻击者不采取ATT&CK攻击';
+        console.log(8)
       }else if(A>0 && B>0 && C>0 && D<0){
         this.calculationResult='防御者追加ATT&CK防御,攻击者不采取ATT&CK攻击';
-      }else{
+        console.log(9)
+      }else if(A<0 && B>0 && C>0 && D>0){
         this.calculationResult='防御者追加ATT&CK防御,攻击者采取ATT&CK攻击';
+        console.log(10)
+      }else if(A>0 && B>0 && C>0 && D>0){
+        this.calculationResult='防御者追加ATT&CK防御,攻击者采取ATT&CK攻击';
+        console.log(11)
+      }else if(A>0 && B<0 && C>0 && D>0){
+        this.calculationResult='防御者追加ATT&CK防御,攻击者采取ATT&CK攻击';
+        console.log(12)
+      }else{
+        this.calculationResult='混沌';
+        console.log(13)
       }
     },
     async fetchNeo4jTactic() {

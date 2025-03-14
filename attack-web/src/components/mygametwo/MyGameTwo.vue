@@ -283,20 +283,49 @@ export default {
       const B=technicCa0_2-technicCa0_1-technicR_1+technicR_2-technicPa0_2*gameR+technicPa0_1*gameR;
       const C=avgE-avgCd+technicPa0_1*gameL-technicPa1_1*gameL;
       const D=technicCa1_2-technicCa1_1-technicR_1+technicR_2-technicPa1_2*gameR+technicPa1_1*gameR;
-      if( A<0 && B<0 && C<0 && D<0){
-        this.calculationResult='防御者不追加ATT&CK防御,攻击者采取策略2攻击';
-      }else if(A<0 && B<0 && C<0 && D>0){
-        this.calculationResult='防御者不追加ATT&CK防御,攻击者采取策略2攻击';
+      console.log(A)
+      console.log(B)
+      console.log(C)
+      console.log(D)
+      if (A < 0 && B < 0 && C < 0 && D < 0) {
+        this.calculationResult = '防御者不追加ATT&CK防御,攻击者采取策略2攻击';
+        console.log(1)
+      }else if(A < 0 && B < 0 && C < 0 && D > 0){
+        this.calculationResult = '防御者不追加ATT&CK防御,攻击者采取策略2攻击';
+        console.log(2)
+      }else if(A < 0 && B < 0 && C > 0 && D < 0){
+        this.calculationResult = '防御者不追加ATT&CK防御,攻击者采取策略2攻击';
+        console.log(3)
       }else if(A<0 && B>0 && C<0 && D<0){
         this.calculationResult='防御者不追加ATT&CK防御,攻击者采取策略1攻击';
+        console.log(4)
       }else if(A<0 && B>0 && C<0 && D>0){
         this.calculationResult='防御者不追加ATT&CK防御,攻击者采取策略1攻击';
+        console.log(5)
+      }else if(A>0 && B>0 && C<0 && D>0){
+        this.calculationResult='防御者不追加ATT&CK防御,攻击者采取策略1攻击';
+        console.log(6)
+      }else if(A>0 && B<0 && C<0 && D<0){
+        this.calculationResult='防御者追加ATT&CK防御,攻击者采取策略2攻击';
+        console.log(7)
       }else if(A>0 && B<0 && C>0 && D<0){
         this.calculationResult='防御者追加ATT&CK防御,攻击者采取策略2攻击';
+        console.log(8)
       }else if(A>0 && B>0 && C>0 && D<0){
         this.calculationResult='防御者追加ATT&CK防御,攻击者采取策略2攻击';
-      } else{
+        console.log(9)
+      }else if(A<0 && B>0 && C>0 && D>0){
         this.calculationResult='防御者追加ATT&CK防御,攻击者采取策略1攻击';
+        console.log(10)
+      }else if(A>0 && B>0 && C>0 && D>0){
+        this.calculationResult='防御者追加ATT&CK防御,攻击者采取策略1攻击';
+        console.log(11)
+      }else if(A>0 && B<0 && C>0 && D>0){
+        this.calculationResult='防御者追加ATT&CK防御,攻击者采取策略1攻击';
+        console.log(12)
+      }else{
+        this.calculationResult='混沌';
+        console.log(13)
       }
     },
     async fetchNeo4jTactic1() {

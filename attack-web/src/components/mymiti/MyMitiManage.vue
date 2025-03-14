@@ -199,7 +199,7 @@ export default {
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
     </el-pagination>
-    <el-dialog
+<!--    <el-dialog
         title="提示"
         :visible.sync="dialogVisible"
         width="30%"
@@ -225,10 +225,89 @@ export default {
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="save">确 定</el-button>
       </span>
+    </el-dialog>-->
+    <el-dialog
+        title="输入"
+        :visible.sync="dialogVisible"
+        width="400px"
+        center
+        top="20vh"
+        :before-close="handleClose"
+        class="custom-dialog"
+    >
+      <el-form
+          ref="form"
+          :rules="rules"
+          :model="form"
+          label-width="120px"
+          label-position="left"
+          class="custom-form"
+      >
+        <el-form-item label="缓解措施编号" prop="no">
+          <el-col :span="20">
+            <el-input v-model="form.no" placeholder="请输入编号"></el-input>
+          </el-col>
+        </el-form-item>
+
+        <el-form-item label="潜在收益" prop="e">
+          <el-col :span="20">
+            <el-input v-model="form.e" placeholder="请输入潜在收益"></el-input>
+          </el-col>
+        </el-form-item>
+
+        <el-form-item label="防御成本" prop="cd">
+          <el-col :span="20">
+            <el-input v-model="form.cd" placeholder="请输入防御成本"></el-input>
+          </el-col>
+        </el-form-item>
+      </el-form>
+
+      <span slot="footer" class="dialog-footer">
+      <el-button @click="dialogVisible = false" icon="el-icon-close">取 消</el-button>
+      <el-button type="primary" @click="save" icon="el-icon-check">确 定</el-button>
+    </span>
     </el-dialog>
   </div>
 </template>
 
 <style scoped>
+.custom-dialog {
+  border-radius: 8px;
+}
 
+.custom-form .el-form-item {
+  margin-bottom: 20px;
+}
+
+.dialog-footer {
+  text-align: right;
+}
+
+.dialog-footer .el-button {
+  margin-left: 10px;
+}
+
+::v-deep .el-dialog {
+  background: linear-gradient(145deg, #ffffff, #f0f8ff); /* 背景渐变 */
+  border-radius: 12px; /* 圆角 */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); /* 阴影 */
+  border: 1px solid #e0e0e0; /* 边框 */
+}
+
+::v-deep .el-dialog__header {
+  background: linear-gradient(145deg, #409eff, #66b1ff); /* 标题背景渐变 */
+  color: #ffffff; /* 文字颜色 */
+  padding: 15px 20px; /* 内边距 */
+  border-top-left-radius: 12px; /* 圆角 */
+  border-top-right-radius: 12px; /* 圆角 */
+  border-bottom: 1px solid #e0e0e0; /* 底部边框 */
+}
+
+::v-deep .el-dialog__body {
+  background-color: #f9f9f9; /* 内容区域背景颜色 */
+  padding: 20px; /* 内边距 */
+  border-bottom-left-radius: 12px; /* 圆角 */
+  border-bottom-right-radius: 12px; /* 圆角 */
+}
 </style>
+
